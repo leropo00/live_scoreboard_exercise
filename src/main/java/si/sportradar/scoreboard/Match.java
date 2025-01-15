@@ -1,27 +1,35 @@
 package si.sportradar.scoreboard;
 
 public class Match {
-	public Match(Team homeTeam, Team awayTeam) {
-		
-	}
+	private Team homeTeam;
+	private Team awayTeam;
+	private Integer homeScore;
+	private Integer awayScore;
 	
+	public Match(Team homeTeam, Team awayTeam) {
+		this.homeTeam = homeTeam;
+		this.awayTeam = awayTeam;
+		this.homeScore = 0;
+		this.awayScore = 0;
+	}
+
 	public Team getHomeTeam() {
-		return null;
+		return this.homeTeam;
 	}
 	
 	public Team getAwayTeam() {
-		return null;
+		return this.awayTeam;
 	}
 	
 	public Integer getHomeScore() {
-		return null;
+		return this.homeScore;
 	}
 
 	public Integer getAwayScore() {
-		return null;
+		return this.awayScore;
 	}
 
 	public Integer getTotalScore() {
-		return null;
+		return this.homeScore + this.awayScore;
 	}
 }
