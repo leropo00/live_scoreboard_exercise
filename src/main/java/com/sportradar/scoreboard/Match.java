@@ -1,4 +1,4 @@
-package si.sportradar.scoreboard;
+package com.sportradar.scoreboard;
 
 public class Match {
 	private Team homeTeam;

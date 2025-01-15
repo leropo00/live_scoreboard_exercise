@@ -1,4 +1,4 @@
-package si.sportradar.scoreboard;
+package com.sportradar.scoreboard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.sportradar.scoreboard.Match;
+import com.sportradar.scoreboard.Team;
 
 public class MatchTest {
 	@Test

@@ -1,4 +1,4 @@
-package si.sportradar.scoreboard;
+package com.sportradar.scoreboard;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.assertj.core.api.Assertions;
@@ -6,6 +6,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.sportradar.scoreboard.Team;
+import com.sportradar.scoreboard.WorldCupScoreboard;
 
 public class WorldCupScoreboardTest {
 	private WorldCupScoreboard scoreboard;
