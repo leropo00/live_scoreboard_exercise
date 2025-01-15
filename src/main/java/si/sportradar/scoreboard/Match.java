@@ -32,4 +32,8 @@ public class Match {
 	public Integer getTotalScore() {
 		return this.homeScore + this.awayScore;
 	}
+	
+	public Long getCreationTimestamp() {
+		return null;
+	}
 }

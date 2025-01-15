@@ -2,6 +2,7 @@ package si.sportradar.scoreboard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,5 +21,16 @@ public class MatchTest {
 		assertEquals(0, match.getHomeScore());
 		assertEquals(0, match.getAwayScore());
 		assertEquals(0, match.getTotalScore());
+	}
+	
+	@Test
+	@DisplayName("Tests creation timestamp of match object")
+	void testCreationTimestamp() {
+		Long beforeCreationTimestamp = System.currentTimeMillis();
+		Match match = new Match(new Team("Mexico"), new Team("Canada"));
+		Long afterCreationTimestamp = System.currentTimeMillis();
+		
+		assertTrue(beforeCreationTimestamp <= match.getCreationTimestamp());
+		assertTrue(match.getCreationTimestamp() <= afterCreationTimestamp);
 	}
 }
