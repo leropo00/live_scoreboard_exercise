@@ -12,7 +12,7 @@ public class WorldCupScoreboard {
 	}
 	
 	public void startNewMatch(Team homeTeam, Team awayTeam)  {
-		
+		this.scoreboard.add(new Match(homeTeam, awayTeam));
 	}
 
 	public List<Match> getScoreboard()  {
