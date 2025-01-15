@@ -5,12 +5,14 @@ public class Match {
 	private Team awayTeam;
 	private Integer homeScore;
 	private Integer awayScore;
+	private Long creationTimestamp;
 	
 	public Match(Team homeTeam, Team awayTeam) {
 		this.homeTeam = homeTeam;
 		this.awayTeam = awayTeam;
 		this.homeScore = 0;
 		this.awayScore = 0;
+		this.creationTimestamp = System.currentTimeMillis(); 
 	}
 
 	public Team getHomeTeam() {
@@ -34,6 +36,6 @@ public class Match {
 	}
 	
 	public Long getCreationTimestamp() {
-		return null;
+		return creationTimestamp;
 	}
 }
