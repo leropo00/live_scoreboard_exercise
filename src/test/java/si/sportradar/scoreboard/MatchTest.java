@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MatchTest {
-
 	@Test
 	@DisplayName("Tests initialization of match object")
 	void testInitialization() {

@@ -35,5 +35,4 @@ public class Team {
 	public int hashCode() {
 	    return Objects.hash(name);
 	}
-
 }

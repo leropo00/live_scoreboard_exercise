@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TeamTest {
-
 	private Team team;
 
 	@BeforeEach
@@ -34,5 +33,4 @@ class TeamTest {
 		assertTrue(teams.contains(new Team("Brazil")));
 		assertFalse(teams.contains(new Team("Portugal")));
 	}
-
 }
