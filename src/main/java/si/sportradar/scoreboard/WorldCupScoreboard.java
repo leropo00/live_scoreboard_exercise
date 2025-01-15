@@ -10,6 +10,10 @@ public class WorldCupScoreboard {
 	public WorldCupScoreboard() {
 		this.scoreboard = new ArrayList<>();
 	}
+	
+	public void startNewMatch(Team homeTeam, Team awayTeam)  {
+		
+	}
 
 	public List<Match> getScoreboard()  {
 		return this.scoreboard;
