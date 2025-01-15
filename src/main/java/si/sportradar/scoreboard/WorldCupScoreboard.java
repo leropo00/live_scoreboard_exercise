@@ -8,12 +8,10 @@ public class WorldCupScoreboard {
 	private List<Match> scoreboard;
 	
 	public WorldCupScoreboard() {
-		
-		this.scoreboard = new ArrayList();
+		this.scoreboard = new ArrayList<>();
 	}
 
 	public List<Match> getScoreboard()  {
-		
 		return this.scoreboard;
 	}
 	
