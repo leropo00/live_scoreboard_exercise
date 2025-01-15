@@ -11,4 +11,8 @@ public class Team {
 	public Team(String name) {
 		
 	}
+	
+	public String getName() {
+		return name;
+	}
 }
