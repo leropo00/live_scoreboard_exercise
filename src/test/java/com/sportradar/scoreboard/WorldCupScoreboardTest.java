@@ -165,7 +165,7 @@ public class WorldCupScoreboardTest {
 		for (int i = 0; i < summary.size() - 1 ; i++ ) {
 			assertTrue(summary.get(i).getTotalScore() > summary.get(i + 1).getTotalScore() || 
 				( summary.get(i).getTotalScore() == summary.get(i + 1).getTotalScore() && summary.get(i).getCreationTimestamp() >= summary.get(i + 1).getCreationTimestamp()),
-				"Condition for sorting matches in two elements");
+				"Condition for sorting of two consecutive matches");
 		}
 	}
 	

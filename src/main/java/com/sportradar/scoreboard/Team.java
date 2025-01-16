@@ -6,4 +6,9 @@ package com.sportradar.scoreboard;
  * class was use instead, in case of future requirements changes.
  * Team name is considered to be unique identifier.
  */
-public record Team (String name) {}
+public record Team (String name) {
+	
+	public String toString() {
+		return this.name;
+	}
+}

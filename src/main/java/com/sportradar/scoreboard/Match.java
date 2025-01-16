@@ -64,4 +64,8 @@ public class Match {
     	this.awayScore -= 1;
 		this.lastIncremented = ScoreLastChange.AWAY_DECREMENTED;
     }
+    
+    public String toString() {
+    	return String.format("%s %d - %s %d", this.homeTeam, this.getHomeScore(), this.awayTeam, this.awayScore);
+    }
 }
