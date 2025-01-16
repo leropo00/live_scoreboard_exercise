@@ -57,8 +57,10 @@ public class WorldCupScoreboard {
 		return matchInProgress;
 	}
 
-	public Match finishMatch(Match match) {
-		return null;
+	public Match finishMatch(Match inputMatch) throws ScoreboardException {
+		Match matchInProgress = findIfMatchIsPresent(inputMatch);
+		this.scoreboard.remove(matchInProgress);
+		return matchInProgress;
 	}
 	
 	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
