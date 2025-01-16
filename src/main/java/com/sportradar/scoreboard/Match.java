@@ -6,6 +6,7 @@ public class Match {
 	private Integer homeScore;
 	private Integer awayScore;
 	private Long creationTimestamp;
+	private ScoreLastIncremented lastIncremented;
 	
 	public Match(Team homeTeam, Team awayTeam) {
 		this.homeTeam = homeTeam;
@@ -13,6 +14,7 @@ public class Match {
 		this.homeScore = 0;
 		this.awayScore = 0;
 		this.creationTimestamp = System.currentTimeMillis(); 
+		this.lastIncremented = ScoreLastIncremented.NONE;
 	}
 
 	public Team getHomeTeam() {
@@ -36,6 +38,30 @@ public class Match {
 	}
 	
 	public Long getCreationTimestamp() {
-		return creationTimestamp;
+		return this.creationTimestamp;
 	}
+	
+	public ScoreLastIncremented getLastIncremented() {
+		return this.lastIncremented;
+	}
+    
+    public void incrementHomeScore() {
+    	this.homeScore += 1;
+		this.lastIncremented = ScoreLastIncremented.HOME;    	
+    }
+    
+    public void decrementHomeScore() {
+    	this.homeScore -= 1;
+		this.lastIncremented = ScoreLastIncremented.NONE;
+    }
+    
+    public void incrementAwayScore() {
+    	this.awayScore += 1;
+		this.lastIncremented = ScoreLastIncremented.AWAY;    	
+    }
+    
+    public void decrementAwayScore() {
+    	this.awayScore -= 1;
+		this.lastIncremented = ScoreLastIncremented.NONE;
+    }
 }

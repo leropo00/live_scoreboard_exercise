@@ -2,6 +2,7 @@ package com.sportradar.scoreboard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.sportradar.scoreboard.errors.ScoreboardException;
 
@@ -24,8 +25,40 @@ public class WorldCupScoreboard {
 		return match;
 	}
 
-	public Match updateScore(Match match, int homeScore, int awayScore) {
-		return null;
+	public Match updateScore(Match inputMatch, int homeScore, int awayScore) throws ScoreboardException {
+		// search for match is done by matching teams, this works based on assumption that only 
+		Optional<Match> matchFound  = scoreboard.stream().filter((m) -> m.getHomeTeam().equals(inputMatch.getHomeTeam()) &&
+				 m.getAwayTeam().equals(inputMatch.getAwayTeam()) &&
+				 m.getCreationTimestamp() == inputMatch.getCreationTimestamp()
+				).findFirst();
+		if (!matchFound.isPresent()) {
+			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
+		}
+		Match matchInProgress = matchFound.get();
+		if (homeScore < 0 || awayScore < 0) {
+			throw new ScoreboardException(ScoreboardException.ERROR_INVALID_SCORE);
+		}
+		
+		final int homeScoreDifference = homeScore - matchInProgress.getHomeScore();
+		final int awayScoreDifference = awayScore - matchInProgress.getAwayScore();
+
+		if (homeScoreDifference ==  1 && awayScoreDifference == 0) {
+			matchInProgress.incrementHomeScore();
+		}
+		else if (homeScoreDifference ==  0 && awayScoreDifference == 1) {
+			matchInProgress.incrementAwayScore();
+		}	
+		else if (homeScoreDifference == -1 && awayScoreDifference == 0 && matchInProgress.getLastIncremented() == ScoreLastIncremented.HOME) {
+			matchInProgress.decrementHomeScore();
+		}
+		else if (homeScoreDifference == 0 && awayScoreDifference == -1 && matchInProgress.getLastIncremented() == ScoreLastIncremented.AWAY) {
+			matchInProgress.decrementAwayScore();
+		}
+		else {
+			throw new ScoreboardException(ScoreboardException.ERROR_INVALID_SCORE);
+		}
+		
+		return matchInProgress;
 	}
 	
 	public List<Match> getScoreboard()  {
