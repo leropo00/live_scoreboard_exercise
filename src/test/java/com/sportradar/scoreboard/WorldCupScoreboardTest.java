@@ -114,10 +114,7 @@ public class WorldCupScoreboardTest {
 	@Test
 	@DisplayName("During match a goal can be rejected after it was score, only if it was final goal scored") 
 	void goalWasRejectedScoreUpdates() throws ScoreboardException {
-		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
-		scoreboard.updateScore(testMatch, 1, 0);
-		scoreboard.updateScore(testMatch, 1, 1);
-		scoreboard.updateScore(testMatch, 1, 2);
+		final Match testMatch = createMatchWithScore(new Team("Mexico"), new Team("Canada"), 1, 2);		
 
 		assertDoesNotThrow(() -> scoreboard.updateScore(testMatch, 1, 1));
 
@@ -131,9 +128,7 @@ public class WorldCupScoreboardTest {
 	@Test
 	@DisplayName("Error occurs if goal was rejected that wasnt scored last") 
 	void goalWasRejectedInvalidScoreUpdates() throws ScoreboardException {
-		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
-		scoreboard.updateScore(testMatch, 1, 0);
-		scoreboard.updateScore(testMatch, 1, 1);
+		final Match testMatch = createMatchWithScore(new Team("Mexico"), new Team("Canada"), 1, 1);	
 		
 		assertThatThrownBy(() -> scoreboard.updateScore(testMatch, 0, 1))
 			.isInstanceOf(ScoreboardException.class)
@@ -152,6 +147,16 @@ public class WorldCupScoreboardTest {
 		assertThatThrownBy(() -> scoreboard.finishMatch(forRemoval))
 			.isInstanceOf(ScoreboardException.class)
 			.hasMessageContaining(ScoreboardException.MISSING_TEAM);
-
+	}
+	
+	private Match createMatchWithScore (Team homeTeam, Team awayTeam, int homeScore, int awayScore) throws ScoreboardException {
+		final Match testMatch = scoreboard.startNewMatch(homeTeam, awayTeam);
+		for(int score = 1; score <= homeScore; score++) {
+			scoreboard.updateScore(testMatch, score, 0);
+		}		
+		for(int score = 1; score <= awayScore; score++) {
+			scoreboard.updateScore(testMatch, homeScore, score);
+		}
+		return testMatch;
 	}
 }
