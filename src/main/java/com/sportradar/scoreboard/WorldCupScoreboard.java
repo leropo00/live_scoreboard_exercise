@@ -57,6 +57,10 @@ public class WorldCupScoreboard {
 		return matchInProgress;
 	}
 
+	public Match finishMatch(Match match) {
+		return null;
+	}
+	
 	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
 		/* 	
 			search for match is done by matching teams, 

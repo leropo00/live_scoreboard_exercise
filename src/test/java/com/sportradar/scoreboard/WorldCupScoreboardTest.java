@@ -138,5 +138,20 @@ public class WorldCupScoreboardTest {
 		assertThatThrownBy(() -> scoreboard.updateScore(testMatch, 0, 1))
 			.isInstanceOf(ScoreboardException.class)
 			.hasMessageContaining(ScoreboardException.ERROR_INVALID_SCORE);
+	}	
+	
+	@Test
+	@DisplayName("Finish match that is currently in progress, this can only happen once") 
+	void finishExistingMatch() throws ScoreboardException {
+		scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		final Match forRemoval = scoreboard.startNewMatch(new Team("Spain"), new Team("Brazil"));
+		scoreboard.startNewMatch(new Team("Germany"), new Team("France"));
+		
+		assertDoesNotThrow(() -> scoreboard.finishMatch(forRemoval));
+		assertEquals(2, scoreboard.getScoreboard().size());
+		assertThatThrownBy(() -> scoreboard.finishMatch(forRemoval))
+			.isInstanceOf(ScoreboardException.class)
+			.hasMessageContaining(ScoreboardException.MISSING_TEAM);
+
 	}
 }
