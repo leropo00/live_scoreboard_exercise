@@ -12,14 +12,16 @@ public class WorldCupScoreboard {
 		this.scoreboard = new ArrayList<>();
 	}
 	
-	public void startNewMatch(Team homeTeam, Team awayTeam) throws ScoreboardException {
+	public Match startNewMatch(Team homeTeam, Team awayTeam) throws ScoreboardException {
 		for (Match match : this.scoreboard) {
 			if (match.getHomeTeam().equals(homeTeam) || match.getHomeTeam().equals(awayTeam) || 
 				match.getAwayTeam().equals(homeTeam) || match.getAwayTeam().equals(awayTeam)) {
 				throw new ScoreboardException(ScoreboardException.ERROR_DUPLICATE_TEAM);
 			}
 		}
-		this.scoreboard.add(new Match(homeTeam, awayTeam));
+		Match match = new Match(homeTeam, awayTeam);
+		this.scoreboard.add(match);
+		return match;
 	}
 
 	public List<Match> getScoreboard()  {
