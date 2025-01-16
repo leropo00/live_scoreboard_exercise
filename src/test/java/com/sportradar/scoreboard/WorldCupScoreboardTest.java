@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -147,6 +148,25 @@ public class WorldCupScoreboardTest {
 		assertThatThrownBy(() -> scoreboard.finishMatch(forRemoval))
 			.isInstanceOf(ScoreboardException.class)
 			.hasMessageContaining(ScoreboardException.MISSING_TEAM);
+	}
+	
+	@Test
+	@DisplayName("Retrives summary of current matches order on total score")
+	void testMatchesSummary() throws ScoreboardException {
+		createMatchWithScore(new Team("Mexico"), new Team("Canada"), 0, 5);
+		createMatchWithScore(new Team("Spain"), new Team("Brazil"), 10, 2);
+		createMatchWithScore(new Team("Germany"), new Team("France"), 2, 2);
+		createMatchWithScore(new Team("Uruguay"), new Team("Italy"), 6, 6);
+		createMatchWithScore(new Team("Argentina"), new Team("Australia"), 3, 1);
+		
+		List<Match> summary = scoreboard.getMatchesSummary();
+		
+		assertEquals(scoreboard.getScoreboard().size(), summary.size(), "Same number of matches in summary list");
+		for (int i = 0; i < summary.size() - 1 ; i++ ) {
+			assertTrue(summary.get(i).getTotalScore() > summary.get(i + 1).getTotalScore() || 
+				( summary.get(i).getTotalScore() == summary.get(i + 1).getTotalScore() && summary.get(i).getCreationTimestamp() >= summary.get(i + 1).getCreationTimestamp()),
+				"Condition for sorting matches in two elements");
+		}
 	}
 	
 	private Match createMatchWithScore (Team homeTeam, Team awayTeam, int homeScore, int awayScore) throws ScoreboardException {
