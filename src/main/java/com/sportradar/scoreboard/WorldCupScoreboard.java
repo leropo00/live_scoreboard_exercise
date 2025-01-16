@@ -1,6 +1,7 @@
 package com.sportradar.scoreboard;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,11 @@ public class WorldCupScoreboard {
 	}
 	
 	public List<Match> getMatchesSummary() {
-		return new ArrayList<>();
+		List<Match> summary = new ArrayList<>();
+		summary.addAll(this.scoreboard);
+		summary.sort(Comparator.comparing(Match::getTotalScore).reversed()
+    	      .thenComparing(Comparator.comparing(Match::getCreationTimestamp).reversed()));
+		return summary;
 	}
 	
 	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
@@ -74,7 +79,7 @@ public class WorldCupScoreboard {
 		 	that each team is present only once,
 			since it is playing only one match at a time
 		*/
-		Optional<Match> matchFound  = scoreboard.stream().filter((m) -> m.getHomeTeam().equals(searchMatch.getHomeTeam()) &&
+		Optional<Match> matchFound  = this.scoreboard.stream().filter((m) -> m.getHomeTeam().equals(searchMatch.getHomeTeam()) &&
 				 m.getAwayTeam().equals(searchMatch.getAwayTeam()) &&
 				 m.getCreationTimestamp() == searchMatch.getCreationTimestamp()
 				).findFirst();
