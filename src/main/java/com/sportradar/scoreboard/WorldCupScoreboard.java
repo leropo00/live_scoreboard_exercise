@@ -24,6 +24,10 @@ public class WorldCupScoreboard {
 		return match;
 	}
 
+	public Match updateScore(Match match, int homeScore, int awayScore) {
+		return null;
+	}
+	
 	public List<Match> getScoreboard()  {
 		return this.scoreboard;
 	}

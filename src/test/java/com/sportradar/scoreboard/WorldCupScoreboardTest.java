@@ -3,6 +3,7 @@ package com.sportradar.scoreboard;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
 
@@ -71,5 +72,71 @@ public class WorldCupScoreboardTest {
 			scoreboard.startNewMatch(new Team(homeTeam2), new Team(awayTeam2));
 		}).isInstanceOf(ScoreboardException.class)
 		  .hasMessageContaining(ScoreboardException.ERROR_DUPLICATE_TEAM);
+	}
+	
+	@Test
+	@DisplayName("After match was started, score can be incremented one by one")
+	void updateMatchScore() throws ScoreboardException {
+		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		final int[][] scores = {{1,0}, {1,1}, {1,2}, {2,2}, {2,3}};
+
+		for (int i = scores.length; i < scores.length; i++)  {
+			final int homeScore = scores[i][0];
+			final int awayScore = scores[i][1];
+
+			assertDoesNotThrow(() -> scoreboard.updateScore(testMatch, homeScore, awayScore));
+			assertEquals(homeScore, testMatch.getHomeScore(), "Home score for match is correct");
+			assertEquals(awayScore, testMatch.getAwayScore(), "Away score for match is correct");
+			assertEquals(homeScore + awayScore, testMatch.getTotalScore(), "Total score for match is correct");
+		}
+	}
+
+	private static Stream<Arguments> provideArgumentsForInvalidScoreTest() {
+	    return Stream.of(
+	    	Arguments.of(-1, -1), 
+	    	Arguments.of(3,  0),
+	    	Arguments.of(2,  1),
+	    	Arguments.of(1,  2)
+   		);
+	}
+	@ParameterizedTest
+	@MethodSource("provideArgumentsForInvalidScoreTest")
+	@DisplayName("Test combinations of invalid match score updated")
+	void invalidMatchScoreUpdates(int homeScore, int awayScore) throws ScoreboardException {
+		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		scoreboard.updateScore(testMatch, 1, 0);
+		
+		assertThatThrownBy(() -> scoreboard.updateScore(testMatch, homeScore, awayScore))
+			.isInstanceOf(ScoreboardException.class)
+			.hasMessageContaining(ScoreboardException.ERROR_INVALID_SCORE);
+	}
+	
+	@Test
+	@DisplayName("During match a goal can be rejected after it was score, only if it was final goal scored") 
+	void goalWasRejectedScoreUpdates() throws ScoreboardException {
+		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		scoreboard.updateScore(testMatch, 1, 0);
+		scoreboard.updateScore(testMatch, 1, 1);
+		scoreboard.updateScore(testMatch, 1, 2);
+
+		assertDoesNotThrow(() -> scoreboard.updateScore(testMatch, 1, 1));
+
+		assertEquals(1, testMatch.getHomeScore(), "Home score for match is correct");
+		assertEquals(1, testMatch.getAwayScore(), "Away score for match is correct");
+		assertThatThrownBy(() -> scoreboard.updateScore(testMatch, 1, 0))
+		   .isInstanceOf(ScoreboardException.class)
+		   .hasMessageContaining(ScoreboardException.ERROR_INVALID_SCORE);
+	}
+	
+	@Test
+	@DisplayName("Error occurs if goal was rejected that wasnt scored last") 
+	void goalWasRejectedInvalidScoreUpdates() throws ScoreboardException {
+		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		scoreboard.updateScore(testMatch, 1, 0);
+		scoreboard.updateScore(testMatch, 1, 1);
+		
+		assertThatThrownBy(() -> scoreboard.updateScore(testMatch, 0, 1))
+			.isInstanceOf(ScoreboardException.class)
+			.hasMessageContaining(ScoreboardException.ERROR_INVALID_SCORE);
 	}
 }
