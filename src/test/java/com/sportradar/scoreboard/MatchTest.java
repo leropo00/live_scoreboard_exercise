@@ -14,13 +14,13 @@ public class MatchTest {
 	@Test
 	@DisplayName("Tests initialization of match object")
 	void testInitialization() {
-		Team homeTeam = new Team("Mexico");
-		Team awayTeam = new Team("Canada");
+		final Team homeTeamInput = new Team("Mexico");
+		final Team awayTeamInput = new Team("Canada");
 		
-		Match match = new Match(homeTeam, awayTeam);
+		Match match = new Match(homeTeamInput, awayTeamInput);
 		
-		assertSame(homeTeam, match.getHomeTeam());
-		assertSame(awayTeam, match.getAwayTeam());
+		assertSame(homeTeamInput, match.getHomeTeam());
+		assertSame(awayTeamInput, match.getAwayTeam());
 		assertEquals(0, match.getHomeScore());
 		assertEquals(0, match.getAwayScore());
 		assertEquals(0, match.getTotalScore());
@@ -29,11 +29,11 @@ public class MatchTest {
 	@Test
 	@DisplayName("Tests creation timestamp of match object")
 	void testCreationTimestamp() {
-		Long beforeCreationTimestamp = System.currentTimeMillis();
+		final Long beforeCreationTimestamp = System.currentTimeMillis();
 		Match match = new Match(new Team("Mexico"), new Team("Canada"));
-		Long afterCreationTimestamp = System.currentTimeMillis();
+	    final Long afterCreationTimestamp = System.currentTimeMillis();
 		
-		assertTrue(beforeCreationTimestamp <= match.getCreationTimestamp());
-		assertTrue(match.getCreationTimestamp() <= afterCreationTimestamp);
+		assertTrue(beforeCreationTimestamp <= match.getCreationTimestamp(), "Match creation time is valid, compared to timestamp before creation");
+		assertTrue(match.getCreationTimestamp() <= afterCreationTimestamp,  "Match creation time is valid, compared to timestamp after creation");
 	}
 }

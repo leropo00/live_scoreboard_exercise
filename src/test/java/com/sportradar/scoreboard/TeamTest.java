@@ -13,17 +13,18 @@ import com.sportradar.scoreboard.Team;
 
 class TeamTest {
 	private Team team;
+	private static final String BRAZIL = "Brazil";
 
 	@BeforeEach
 	void init() {
-		team = new Team("Brazil");
+		team = new Team(BRAZIL);
 	}
 	
 	@Test
 	@DisplayName("Tests construction of team object")
 	void testInitialization() {
-		assertEquals(team.getName(), "Brazil");
-		assertEquals(team, new Team("Brazil"));
+		assertEquals(BRAZIL, team.getName());
+		assertEquals(team, new Team(BRAZIL));
 	}
 
 	@Test
@@ -32,7 +33,7 @@ class TeamTest {
 		Set<Team> teams = new HashSet<>();
 		teams.add(team);
 		
-		assertTrue(teams.contains(new Team("Brazil")));
+		assertTrue(teams.contains(new Team(BRAZIL)));
 		assertFalse(teams.contains(new Team("Portugal")));
 	}
 }
