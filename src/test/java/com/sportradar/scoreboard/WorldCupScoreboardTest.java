@@ -22,6 +22,23 @@ import com.sportradar.scoreboard.errors.ScoreboardException;
 public class WorldCupScoreboardTest {
 	private WorldCupScoreboard scoreboard;
 	private static final String DUPLICATE_COUNTRY = "Mexico";
+	// test all the possible combinations of a duplicate country
+	private static Stream<Arguments> provideArgumentsForDuplicateCountryTest() {
+	    return Stream.of(
+	    	Arguments.of(DUPLICATE_COUNTRY, "Canada", DUPLICATE_COUNTRY, "Brazil"), 
+	    	Arguments.of(DUPLICATE_COUNTRY, "Canada", "Brazil", DUPLICATE_COUNTRY),
+	    	Arguments.of("Canada", DUPLICATE_COUNTRY, DUPLICATE_COUNTRY, "Brazil"),
+	    	Arguments.of("Canada", DUPLICATE_COUNTRY, "Brazil", DUPLICATE_COUNTRY)
+	    );
+	}
+	private static Stream<Arguments> provideArgumentsForInvalidScoreTest() {
+	    return Stream.of(
+	    	Arguments.of(-1, -1), 
+	    	Arguments.of(3,  0),
+	    	Arguments.of(2,  1),
+	    	Arguments.of(1,  2)
+   		);
+	}
 	
 	@BeforeEach
 	void init() {
@@ -29,7 +46,7 @@ public class WorldCupScoreboardTest {
 	}
 	
 	@Test 
-    @DisplayName("When scoreboard is initialized no matches are present")   
+    @DisplayName("When scoreboard is initialized, no matches are present")   
 	void noMatchesAtStart()  {
 		assertEquals(0, scoreboard.size());
 	}
@@ -51,16 +68,6 @@ public class WorldCupScoreboardTest {
 		});
 		assertEquals(2, scoreboard.size());
 	}
-
-	// test all the possible combinations of duplicate country
-	private static Stream<Arguments> provideArgumentsForDuplicateCountryTest() {
-	    return Stream.of(
-	    	Arguments.of(DUPLICATE_COUNTRY, "Canada", DUPLICATE_COUNTRY, "Brazil"), 
-	    	Arguments.of(DUPLICATE_COUNTRY, "Canada", "Brazil", DUPLICATE_COUNTRY),
-	    	Arguments.of("Canada", DUPLICATE_COUNTRY, DUPLICATE_COUNTRY, "Brazil"),
-	    	Arguments.of("Canada", DUPLICATE_COUNTRY, "Brazil", DUPLICATE_COUNTRY)
-	    );
-	}
 	
 	@ParameterizedTest
 	@MethodSource("provideArgumentsForDuplicateCountryTest")
@@ -74,7 +81,7 @@ public class WorldCupScoreboardTest {
 	}
 	
 	@Test
-	@DisplayName("After match was started, score can be incremented one by one")
+	@DisplayName("After match was started, score can be incremented only by 1")
 	void updateMatchScore() throws ScoreboardException {
 		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
 		final int[][] scores = {{1,0}, {1,1}, {1,2}, {2,2}, {2,3}};
@@ -90,17 +97,9 @@ public class WorldCupScoreboardTest {
 		}
 	}
 
-	private static Stream<Arguments> provideArgumentsForInvalidScoreTest() {
-	    return Stream.of(
-	    	Arguments.of(-1, -1), 
-	    	Arguments.of(3,  0),
-	    	Arguments.of(2,  1),
-	    	Arguments.of(1,  2)
-   		);
-	}
 	@ParameterizedTest
 	@MethodSource("provideArgumentsForInvalidScoreTest")
-	@DisplayName("Test combinations of invalid match score updated")
+	@DisplayName("Test combinations of invalid match score updates")
 	void invalidMatchScoreUpdates(int homeScore, int awayScore) throws ScoreboardException {
 		final Match testMatch = scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
 		scoreboard.updateScore(testMatch, 1, 0);
@@ -125,7 +124,7 @@ public class WorldCupScoreboardTest {
 	}
 	
 	@Test
-	@DisplayName("Error occurs if goal was rejected that wasnt scored last") 
+	@DisplayName("Error occurs if goal was rejected, which was not the last scored one") 
 	void goalWasRejectedInvalidScoreUpdates() throws ScoreboardException {
 		final Match testMatch = createMatchWithScore(new Team("Mexico"), new Team("Canada"), 1, 1);	
 		
@@ -135,7 +134,7 @@ public class WorldCupScoreboardTest {
 	}	
 	
 	@Test
-	@DisplayName("Updating score with the same number of goals, does not throw an error or change game state")
+	@DisplayName("Updating score with the same number of goals, does not throw an error or change the game state")
 	void sameScoreUpdates() throws ScoreboardException  {
 		final Match testMatch = createMatchWithScore(new Team("Mexico"), new Team("Canada"), 2, 2);
 
@@ -165,7 +164,7 @@ public class WorldCupScoreboardTest {
 	}
 	
 	@Test
-	@DisplayName("Retrives summary of current matches order on total score")
+	@DisplayName("Retrives summary of current matches by ordering on total score and in case of ties start date")
 	void testMatchesSummary() throws ScoreboardException {
 		createMatchWithScore(new Team("Mexico"), new Team("Canada"), 0, 5);
 		createMatchWithScore(new Team("Spain"), new Team("Brazil"), 10, 2);
@@ -184,7 +183,7 @@ public class WorldCupScoreboardTest {
 	}
 	
 	@Test
-	@DisplayName("Test retriveal of team that is playing")
+	@DisplayName("Test retrieval of team that is playing")
 	void findMatchOnScoreboard() throws ScoreboardException {
 		Team homeTeam = new Team("Spain");
 		Team awayTeam = new Team("Brazil");
