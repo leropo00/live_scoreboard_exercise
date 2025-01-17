@@ -75,6 +75,16 @@ public class WorldCupScoreboard {
 		return summary;
 	}
 	
+	public Match findMatch(Team homeTeam, Team awayTeams) throws ScoreboardException {
+		Optional<Match> matchFound  = this.scoreboard.stream().filter((m) -> m.getHomeTeam().equals(homeTeam) &&
+				 m.getAwayTeam().equals(awayTeams))
+				.findFirst();
+		if (!matchFound.isPresent()) {
+			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
+		}
+		return matchFound.get();
+	}
+	
 	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
 		/* 	
 			search for match is done by matching teams, 
