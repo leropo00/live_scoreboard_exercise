@@ -38,6 +38,10 @@ public class WorldCupScoreboard {
 		
 		final int homeScoreDifference = homeScore - matchInProgress.getHomeScore();
 		final int awayScoreDifference = awayScore - matchInProgress.getAwayScore();
+		// if same score is sent no error occurs, but nothing changes in match
+		if (homeScoreDifference == 0 && awayScoreDifference == 0) {
+			return matchInProgress;
+		}
 
 		if (homeScoreDifference ==  1 && awayScoreDifference == 0) {
 			matchInProgress.incrementHomeScore();
@@ -54,7 +58,6 @@ public class WorldCupScoreboard {
 		else {
 			throw new ScoreboardException(ScoreboardException.ERROR_INVALID_SCORE);
 		}
-		
 		return matchInProgress;
 	}
 
