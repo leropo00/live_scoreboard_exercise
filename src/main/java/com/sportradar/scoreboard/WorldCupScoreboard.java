@@ -78,7 +78,7 @@ public class WorldCupScoreboard {
 	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
 		/* 	
 			search for match is done by matching teams, 
-		 	this works on current searchboard assumption
+		 	this works on current scoreboard assumption
 		 	that each team is present only once,
 			since it is playing only one match at a time
 		*/
