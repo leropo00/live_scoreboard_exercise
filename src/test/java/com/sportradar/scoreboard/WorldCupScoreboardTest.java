@@ -180,6 +180,22 @@ public class WorldCupScoreboardTest {
 		}
 	}
 	
+	@Test
+	@DisplayName("Test retriveal of team that is playing")
+	void findMatchOnScoreboard() throws ScoreboardException {
+		Team homeTeam = new Team("Spain");
+		Team awayTeam = new Team("Brazil");
+		scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
+		scoreboard.startNewMatch(homeTeam, awayTeam); 
+		
+		Match match = scoreboard.findMatch(homeTeam, awayTeam);
+		assertEquals(homeTeam, match.getHomeTeam());
+		assertEquals(awayTeam, match.getAwayTeam());
+		assertThatThrownBy(() -> scoreboard.findMatch(awayTeam, homeTeam))
+			.isInstanceOf(ScoreboardException.class)
+			.hasMessageContaining(ScoreboardException.MISSING_TEAM);
+	}
+	
 	private Match createMatchWithScore (Team homeTeam, Team awayTeam, int homeScore, int awayScore) throws ScoreboardException {
 		final Match testMatch = scoreboard.startNewMatch(homeTeam, awayTeam);
 		for (int score = 1; score <= homeScore; score++) {
