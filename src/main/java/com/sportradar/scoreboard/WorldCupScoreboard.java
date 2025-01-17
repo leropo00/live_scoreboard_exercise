@@ -14,8 +14,8 @@ public class WorldCupScoreboard {
 		this.scoreboard = new ArrayList<>();
 	}
 	
-	public List<Match> getScoreboard()  {
-		return this.scoreboard;
+	public int size()  {
+		return this.scoreboard.size();
 	}
 	
 	public Match startNewMatch(Team homeTeam, Team awayTeam) throws ScoreboardException {

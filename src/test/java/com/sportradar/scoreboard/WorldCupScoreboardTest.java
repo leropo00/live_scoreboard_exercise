@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,7 @@ public class WorldCupScoreboardTest {
 	@Test 
     @DisplayName("When scoreboard is initialized no matches are present")   
 	void noMatchesAtStart()  {
-		assertTrue(scoreboard.getScoreboard().isEmpty());
+		assertEquals(0, scoreboard.size());
 	}
 	
 	@Test
@@ -41,7 +39,7 @@ public class WorldCupScoreboardTest {
 	void startFirstMatch() {
         assertDoesNotThrow(() ->
         	scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada")));
-		Assertions.assertThat(scoreboard.getScoreboard()).hasSize(1);
+		assertEquals(1, scoreboard.size());
 	}
 	
 	@Test
@@ -51,7 +49,7 @@ public class WorldCupScoreboardTest {
 			scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
 			scoreboard.startNewMatch(new Team("Spain"), new Team("Brazil")); 
 		});
-		Assertions.assertThat(scoreboard.getScoreboard()).hasSize(2);
+		assertEquals(2, scoreboard.size());
 	}
 
 	// test all the possible combinations of duplicate country
@@ -157,7 +155,7 @@ public class WorldCupScoreboardTest {
 		scoreboard.startNewMatch(new Team("Germany"), new Team("France"));
 		
 		assertDoesNotThrow(() -> scoreboard.finishMatch(forRemoval));
-		assertEquals(2, scoreboard.getScoreboard().size());
+		assertEquals(2, scoreboard.size());
 		assertThatThrownBy(() -> scoreboard.finishMatch(forRemoval))
 			.isInstanceOf(ScoreboardException.class)
 			.hasMessageContaining(ScoreboardException.MISSING_TEAM);
@@ -174,7 +172,7 @@ public class WorldCupScoreboardTest {
 		
 		List<Match> summary = scoreboard.getMatchesSummary();
 		
-		assertEquals(scoreboard.getScoreboard().size(), summary.size(), "Same number of matches in summary list");
+		assertEquals(scoreboard.size(), summary.size(), "Same number of matches in summary list");
 		for (int i = 0; i < summary.size() - 1 ; i++ ) {
 			assertTrue(summary.get(i).getTotalScore() > summary.get(i + 1).getTotalScore() || 
 				( summary.get(i).getTotalScore() == summary.get(i + 1).getTotalScore() && summary.get(i).getCreationTimestamp() >= summary.get(i + 1).getCreationTimestamp()),
@@ -184,10 +182,10 @@ public class WorldCupScoreboardTest {
 	
 	private Match createMatchWithScore (Team homeTeam, Team awayTeam, int homeScore, int awayScore) throws ScoreboardException {
 		final Match testMatch = scoreboard.startNewMatch(homeTeam, awayTeam);
-		for(int score = 1; score <= homeScore; score++) {
+		for (int score = 1; score <= homeScore; score++) {
 			scoreboard.updateScore(testMatch, score, 0);
 		}		
-		for(int score = 1; score <= awayScore; score++) {
+		for (int score = 1; score <= awayScore; score++) {
 			scoreboard.updateScore(testMatch, homeScore, score);
 		}
 		return testMatch;
