@@ -150,9 +150,12 @@ public class WorldCupScoreboardTest {
 	@Test
 	@DisplayName("Finish match that is currently in progress, this can only happen once") 
 	void finishExistingMatch() throws ScoreboardException {
+		Team homeTeam = new Team("Spain");
+		Team awayTeam = new Team("Brazil");
 		scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
-		final Match forRemoval = scoreboard.startNewMatch(new Team("Spain"), new Team("Brazil"));
+		scoreboard.startNewMatch(homeTeam, awayTeam);
 		scoreboard.startNewMatch(new Team("Germany"), new Team("France"));
+		final Match forRemoval = scoreboard.findMatch(homeTeam, awayTeam);
 		
 		assertDoesNotThrow(() -> scoreboard.finishMatch(forRemoval));
 		assertEquals(2, scoreboard.size());

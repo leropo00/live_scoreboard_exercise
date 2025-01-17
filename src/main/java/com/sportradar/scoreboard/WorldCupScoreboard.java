@@ -30,41 +30,43 @@ public class WorldCupScoreboard {
 		return match;
 	}
 
-	public Match updateScore(Match inputMatch, int homeScore, int awayScore) throws ScoreboardException {
-		Match matchInProgress = findIfMatchIsPresent(inputMatch);
+	public void updateScore(Match match, int homeScore, int awayScore) throws ScoreboardException {
+		if (!this.scoreboard.contains(match)) {
+			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
+		}
 		if (homeScore < 0 || awayScore < 0) {
 			throw new ScoreboardException(ScoreboardException.ERROR_INVALID_SCORE);
 		}
 		
-		final int homeScoreDifference = homeScore - matchInProgress.getHomeScore();
-		final int awayScoreDifference = awayScore - matchInProgress.getAwayScore();
+		final int homeScoreDifference = homeScore - match.getHomeScore();
+		final int awayScoreDifference = awayScore - match.getAwayScore();
 		// if same score is sent no error occurs, but nothing changes in match
 		if (homeScoreDifference == 0 && awayScoreDifference == 0) {
-			return matchInProgress;
+			return;
 		}
 
 		if (homeScoreDifference ==  1 && awayScoreDifference == 0) {
-			matchInProgress.incrementHomeScore();
+			match.incrementHomeScore();
 		}
 		else if (homeScoreDifference ==  0 && awayScoreDifference == 1) {
-			matchInProgress.incrementAwayScore();
+			match.incrementAwayScore();
 		}	
-		else if (homeScoreDifference == -1 && awayScoreDifference == 0 && matchInProgress.getLastIncremented() == ScoreLastChange.HOME_INCREMENTED) {
-			matchInProgress.decrementHomeScore();
+		else if (homeScoreDifference == -1 && awayScoreDifference == 0 && match.getLastIncremented() == ScoreLastChange.HOME_INCREMENTED) {
+			match.decrementHomeScore();
 		}
-		else if (homeScoreDifference == 0 && awayScoreDifference == -1 && matchInProgress.getLastIncremented() == ScoreLastChange.AWAY_INCREMENTED) {
-			matchInProgress.decrementAwayScore();
+		else if (homeScoreDifference == 0 && awayScoreDifference == -1 && match.getLastIncremented() == ScoreLastChange.AWAY_INCREMENTED) {
+			match.decrementAwayScore();
 		}
 		else {
 			throw new ScoreboardException(ScoreboardException.ERROR_INVALID_SCORE);
 		}
-		return matchInProgress;
 	}
 
-	public Match finishMatch(Match inputMatch) throws ScoreboardException {
-		Match matchInProgress = findIfMatchIsPresent(inputMatch);
-		this.scoreboard.remove(matchInProgress);
-		return matchInProgress;
+	public void finishMatch(Match match) throws ScoreboardException {
+		if (!this.scoreboard.contains(match)) {
+			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
+		}
+		this.scoreboard.remove(match);
 	}
 	
 	public List<Match> getMatchesSummary() {
@@ -76,26 +78,15 @@ public class WorldCupScoreboard {
 	}
 	
 	public Match findMatch(Team homeTeam, Team awayTeams) throws ScoreboardException {
-		Optional<Match> matchFound  = this.scoreboard.stream().filter((m) -> m.getHomeTeam().equals(homeTeam) &&
-				 m.getAwayTeam().equals(awayTeams))
-				.findFirst();
-		if (!matchFound.isPresent()) {
-			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
-		}
-		return matchFound.get();
-	}
-	
-	private Match findIfMatchIsPresent(Match searchMatch) throws ScoreboardException {
 		/* 	
 			search for match is done by matching teams, 
 		 	this works on current scoreboard assumption
 		 	that each team is present only once,
 			since it is playing only one match at a time
 		*/
-		Optional<Match> matchFound  = this.scoreboard.stream().filter((m) -> m.getHomeTeam().equals(searchMatch.getHomeTeam()) &&
-				 m.getAwayTeam().equals(searchMatch.getAwayTeam()) &&
-				 m.getCreationTimestamp() == searchMatch.getCreationTimestamp()
-				).findFirst();
+		Optional<Match> matchFound  = this.scoreboard.stream().filter((m) -> m.getHomeTeam().equals(homeTeam) &&
+				 m.getAwayTeam().equals(awayTeams))
+				.findFirst();
 		if (!matchFound.isPresent()) {
 			throw new ScoreboardException(ScoreboardException.MISSING_TEAM);
 		}
