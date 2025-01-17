@@ -137,6 +137,19 @@ public class WorldCupScoreboardTest {
 	}	
 	
 	@Test
+	@DisplayName("Updating score with the same number of goals, does not throw an error or change game state")
+	void sameScoreUpdates() throws ScoreboardException  {
+		final Match testMatch = createMatchWithScore(new Team("Mexico"), new Team("Canada"), 2, 2);
+
+		assertDoesNotThrow(() -> { 
+			scoreboard.updateScore(testMatch, 2, 2);
+			scoreboard.updateScore(testMatch, 2, 2);
+			scoreboard.updateScore(testMatch, 3, 2);
+			scoreboard.updateScore(testMatch, 3, 2);
+		});
+	}
+	
+	@Test
 	@DisplayName("Finish match that is currently in progress, this can only happen once") 
 	void finishExistingMatch() throws ScoreboardException {
 		scoreboard.startNewMatch(new Team("Mexico"), new Team("Canada"));
